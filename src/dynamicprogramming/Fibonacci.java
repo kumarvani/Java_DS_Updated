@@ -1,30 +1,21 @@
 package dynamicprogramming;
 
 public class Fibonacci {
-	public static void main(String[] args) {
-
-		printFibonacci();
-		System.out.println();
-		System.out.println(fibonacci(4));
-	}
-
-	static void printFibonacci() {
-		int a = 0;
-		int b = 1;
-		System.out.print(a + " , " + b + " , ");
-		int i = 0;
-		while (i < 10) {
-			a=a+b;
-			b=a+b;
-			System.out.print(a + " , " + b + " , ");
-			i++;
+	public static long fibonacci(int n) {
+		long[] f = new long[n + 1];
+		f[0] = 0;
+		f[1] = 1;
+		for (int i = 2; i <= n; i++) {
+			f[i] = f[i - 1] + f[i - 2];
 		}
+		return f[n - 1];
 	}
 
-	static int fibonacci(int n) {
-		if (n <= 2)
-			return 1;
-		return fibonacci(n - 1) + fibonacci(n - 2);
+	public static double fibonacciFormula(int n) {
+		return Math.pow(((1+Math.sqrt(5))/2),n)/Math.sqrt(5);
+	}
 
+	public static void main(String[] args) {
+		System.out.println(fibonacciFormula(100));
 	}
 }

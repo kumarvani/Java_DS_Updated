@@ -196,12 +196,12 @@ class BinaryTree {
 			list = map.getOrDefault(distNode.distance, new ArrayList<>());
 			list.add(distNode.node);
 			map.put(distNode.distance, list);
-			if(distNode.node.left!=null)
-				queue.offer(new DistNode(distNode.node.left, distNode.distance+1));
-			if(distNode.node.right!=null)
+			if (distNode.node.left != null)
+				queue.offer(new DistNode(distNode.node.left, distNode.distance + 1));
+			if (distNode.node.right != null)
 				queue.offer(new DistNode(distNode.node.right, distNode.distance));
 		}
-		map.forEach((key,value)->System.out.println(value));
+		map.forEach((key, value) -> System.out.println(value));
 	}
 
 	public void topView(Node root) {
@@ -471,6 +471,160 @@ class BinaryTree {
 
 	}
 
+	public boolean findIfPathToNode(Node root, Node node, Stack<Node> stack) {
+		if (root == null)
+			return false;
+
+		stack.push(root);
+		if (root.data == node.data)
+			return true;
+		if (findIfPathToNode(root.left, node, stack) || findIfPathToNode(root.right, node, stack))
+			return true;
+		stack.pop();
+		return false;
+
+	}
+
+	public int lowestCommonAncestor(Node root, Node node1, Node node2) {
+		if (root == null)
+			return -1;
+		Stack<Node> stack1 = new Stack<>();
+		findIfPathToNode(root, node1, stack1);
+		Stack<Node> stack2 = new Stack<>();
+		findIfPathToNode(root, node2, stack2);
+		int lCA = 0;
+		for (int i = 0, j = 0; i < stack1.size() && j < stack2.size(); i++, j++) {
+			if (stack1.get(i).data != stack2.get(j).data)
+				break;
+			lCA = stack1.get(i).data;
+		}
+		return lCA;
+//		to return the distance between the nodes
+//		return stack1.size() + stack2.size() - 1;
+	}
+
+	public Node LCARecursive(Node root, Node node1, Node node2) {
+		if (root == null)
+			return null;
+		if (root.data == node1.data || root.data == node2.data)
+			return root;
+		Node leftRecursive = LCARecursive(root.left, node1, node2);
+		Node rightRecursive = LCARecursive(root.right, node1, node2);
+		if (leftRecursive != null && rightRecursive != null)
+			return root;
+		return (leftRecursive != null) ? leftRecursive : rightRecursive;
+	}
+
+	public void deleteNode(Node root, Node node) {
+		if (root == null)
+			return;
+		if (root.left != null && root.left.data == node.data)
+			root.left = null;
+		if (root.right != null && root.right.data == node.data)
+			root.right = null;
+		deleteNode(root.left, node);
+		deleteNode(root.right, node);
+	}
+
+	@Override
+	public String toString() {
+		preOrderTraversal(root);
+		return "";
+	}
+}
+
+class BinarySearchTree {
+	Node root;
+
+	public BinarySearchTree(int value) {
+		root = new Node(value);
+	}
+
+	public void insert(int value) {
+		Node newNode = new Node(value);
+		if (root == null)
+			root = newNode;
+		else
+			insert(root, newNode);
+	}
+
+	private void insert(Node root, Node node) {
+		if (node.data < root.data) {
+			if (root.left == null)
+				root.left = node;
+			else
+				insert(root.left, node);
+		} else if (node.data > root.data) {
+			if (root.right == null)
+				root.right = node;
+			else
+				insert(root.right, node);
+		} else {
+			System.out.println("Data already exists in tree");
+		}
+	}
+
+	public boolean find(int value) {
+		if (root == null)
+			return false;
+		return find(root, value);
+	}
+
+	private boolean find(Node root, int value) {
+		if (root.data == value)
+			return true;
+		if (root.left != null && value < root.data)
+			return find(root.left, value);
+		if (root.right != null && value > root.data)
+			return find(root.right, value);
+		return false;
+	}
+
+	public void preOrderTraversal(Node root) {
+		if (root == null)
+			return;
+		System.out.println(root.data);
+		preOrderTraversal(root.left);
+		preOrderTraversal(root.right);
+	}
+
+	public int min() {
+		if (root == null)
+			return 0;
+		Node temp = root;
+		while (temp.left != null)
+			temp = temp.left;
+		return temp.data;
+	}
+
+	public int max() {
+		if (root == null)
+			return 0;
+		Node temp = root;
+		while (temp.right != null)
+			temp = temp.right;
+		return temp.data;
+	}
+
+	@Override
+	public String toString() {
+		preOrderTraversal(root);
+		return "";
+	}
+}
+
+class BinarySearchTreeTest {
+	public static void main(String[] args) {
+		BinarySearchTree binarySearchTree = new BinarySearchTree(2);
+		binarySearchTree.insert(3);
+		binarySearchTree.insert(1);
+		binarySearchTree.insert(4);
+		System.out.println(binarySearchTree.min());
+		System.out.println(binarySearchTree.max());
+//		System.out.println(binarySearchTree.find(4));
+//		System.out.println(binarySearchTree);
+	}
+
 }
 
 class BinaryTreeTest {
@@ -482,7 +636,18 @@ class BinaryTreeTest {
 		binaryTree.root.left.right = new Node(5);
 		binaryTree.root.right.left = new Node(6);
 		binaryTree.root.right.right = new Node(7);
+		System.out.println(binaryTree);
+		binaryTree.deleteNode(binaryTree.root, binaryTree.root.right);
+		System.out.println(binaryTree);
+//		int lcaRecursive = binaryTree.lowestCommonAncestor(binaryTree.root, binaryTree.root.left.left, binaryTree.root.right.right);
+//		System.out.println(lcaRecursive);
 
+//		int lowestCommonAncestor = binaryTree.lowestCommonAncestor(binaryTree.root, binaryTree.root.right,
+//				binaryTree.root.right.left);
+//		System.out.println(lowestCommonAncestor);
+//		Stack<Node> stack = new Stack<>();
+//		System.out.println(binaryTree.findIfPathToNode(binaryTree.root, binaryTree.root.left.right,
+//				stack));
 //		binaryTree.diagonalTraversal(binaryTree.root);
 //		System.out.println(binaryTree.getLevel(binaryTree.root, binaryTree.root.right.right, 0));
 //		binaryTree.printNodesAtGivenLevel(binaryTree.root, 1);

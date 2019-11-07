@@ -9,7 +9,7 @@ public class BinarySearchTechnique {
 	}
 
 	private static int search(int[] array, int low, int high, int element) {
-		if (high >= low) {
+		if (high > low) {
 			int mid = (low + high) / 2;
 			if (array[mid] == element) {
 				System.out.println("Element found at " + mid);
